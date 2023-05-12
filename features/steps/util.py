@@ -87,8 +87,7 @@ def wait_for(
     end = time() + timeout_
     while time() <= end:
         try:
-            result = func(**kwargs)
-            return result
+            return func(**kwargs)
         except Exception as err:  # pylint: disable=broad-except
             if print_error:
                 print(err)
@@ -112,7 +111,7 @@ def get_logline_count(logfile: str) -> int:
     """
     try:
         with open(logfile, encoding="utf-8") as file_handle:
-            return sum(1 for i in file_handle)
+            return sum(1 for _ in file_handle)
     except FileNotFoundError:
         return 0
 

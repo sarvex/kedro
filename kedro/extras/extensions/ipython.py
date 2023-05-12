@@ -112,7 +112,7 @@ def load_ipython_extension(ipython):
 
     try:
         reload_kedro(project_path)
-    except (ImportError, ModuleNotFoundError):
+    except ImportError:
         logging.error("Kedro appears not to be installed in your current environment.")
     except Exception:  # pylint: disable=broad-except
         logging.warning(

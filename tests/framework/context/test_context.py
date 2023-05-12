@@ -257,11 +257,9 @@ def dummy_context(
     tmp_path, prepare_project_dir, env, extra_params, mocker
 ):  # pylint: disable=unused-argument
     configure_project(MOCK_PACKAGE_NAME)
-    context = KedroContext(
+    yield KedroContext(
         MOCK_PACKAGE_NAME, str(tmp_path), env=env, extra_params=extra_params
     )
-
-    yield context
     pipelines._clear(MOCK_PACKAGE_NAME)
 
 

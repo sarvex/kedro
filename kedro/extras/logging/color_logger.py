@@ -75,10 +75,7 @@ class ColorHandler(logging.StreamHandler):
             return self.colors["warning"]  # pragma: no cover
         if level >= logging.INFO:
             return self.colors["info"]
-        if level >= logging.DEBUG:  # pragma: no cover
-            return self.colors["debug"]  # pragma: no cover
-
-        return None  # pragma: no cover
+        return self.colors["debug"] if level >= logging.DEBUG else None
 
     def format(self, record: logging.LogRecord) -> str:
         """The handler formatter.

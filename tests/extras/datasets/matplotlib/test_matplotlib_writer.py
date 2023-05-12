@@ -31,7 +31,7 @@ def mock_single_plot():
 def mock_list_plot():
     plots_list = []
     colour = "red"
-    for index in range(5):  # pylint: disable=unused-variable
+    for _ in range(5):
         plots_list.append(plt.figure())
         plt.plot([1, 2, 3], [4, 5, 6], color=colour)
     plt.close("all")

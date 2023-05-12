@@ -17,12 +17,11 @@ S3FS = "s3fs>=0.3.0, <0.5"
 
 # get package version
 with open(path.join(here, name, "__init__.py"), encoding="utf-8") as f:
-    result = re.search(r'__version__ = ["\']([^"\']+)', f.read())
+    if result := re.search(r'__version__ = ["\']([^"\']+)', f.read()):
+        version = result[1]
 
-    if not result:
+    else:
         raise ValueError("Can't find the version in kedro/__init__.py")
-
-    version = result.group(1)
 
 # get the dependencies and installs
 with open("requirements.txt", encoding="utf-8") as f:
@@ -47,7 +46,7 @@ for pattern in ["**/*", "**/.*", "**/.*/**", "**/.*/.**"]:
     template_files.extend(
         [
             name.replace("kedro/", "", 1)
-            for name in glob("kedro/templates/" + pattern, recursive=True)
+            for name in glob(f"kedro/templates/{pattern}", recursive=True)
         ]
     )
 

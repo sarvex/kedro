@@ -135,8 +135,7 @@ class Node:  # pylint: disable=too-many-instance-attributes
             "tags": self._tags,
             "decorators": self._decorators,
             "confirms": self._confirms,
-        }
-        params.update(overwrite_params)
+        } | overwrite_params
         return Node(**params)
 
     @property
@@ -151,9 +150,7 @@ class Node:  # pylint: disable=too-many-instance-attributes
                 # {"arg1": "a", "arg2": "b"} is equivalent to
                 # a node with inputs/outputs {"arg2": "b", "arg1": "a"}
                 return tuple(sorted(value.items()))
-            if isinstance(value, list):
-                return tuple(value)
-            return value
+            return tuple(value) if isinstance(value, list) else value
 
         return (self.name, hashable(self._inputs), hashable(self._outputs))
 
@@ -177,8 +174,8 @@ class Node:  # pylint: disable=too-many-instance-attributes
         out_str = _set_to_str(self.outputs) if self._outputs else "None"
         in_str = _set_to_str(self.inputs) if self._inputs else "None"
 
-        prefix = self._name + ": " if self._name else ""
-        return prefix + f"{self._func_name}({in_str}) -> {out_str}"
+        prefix = f"{self._name}: " if self._name else ""
+        return f"{prefix}{self._func_name}({in_str}) -> {out_str}"
 
     def __repr__(self):  # pragma: no cover
         return (
@@ -250,9 +247,7 @@ class Node:  # pylint: disable=too-many-instance-attributes
             Node's name if provided or the name of its function.
         """
         node_name = self._name or str(self)
-        if self.namespace:
-            return f"{self.namespace}.{node_name}"
-        return node_name
+        return f"{self.namespace}.{node_name}" if self.namespace else node_name
 
     @property
     def short_name(self) -> str:
@@ -262,10 +257,7 @@ class Node:  # pylint: disable=too-many-instance-attributes
             Returns a short, user-friendly name that is not guaranteed to be unique.
             The namespace is stripped out of the node name.
         """
-        if self._name:
-            return self._name
-
-        return self._func_name.replace("_", " ").title()
+        return self._name if self._name else self._func_name.replace("_", " ").title()
 
     @property
     def namespace(self) -> Optional[str]:
@@ -532,9 +524,7 @@ class Node:  # pylint: disable=too-many-instance-attributes
             return {}
         if isinstance(self._outputs, str):
             return {self._outputs: outputs}
-        if isinstance(self._outputs, dict):
-            return _from_dict()
-        return _from_list()
+        return _from_dict() if isinstance(self._outputs, dict) else _from_list()
 
     def _validate_inputs(self, func, inputs):
         # inspect does not support built-in Python functions written in C.
@@ -555,16 +545,14 @@ class Node:  # pylint: disable=too-many-instance-attributes
                 ) from exc
 
     def _validate_unique_outputs(self):
-        diff = Counter(self.outputs) - Counter(set(self.outputs))
-        if diff:
+        if diff := Counter(self.outputs) - Counter(set(self.outputs)):
             raise ValueError(
                 f"Failed to create node {self} due to duplicate"
                 f" output(s) {set(diff.keys())}.\nNode outputs must be unique."
             )
 
     def _validate_inputs_dif_than_outputs(self):
-        common_in_out = set(self.inputs).intersection(set(self.outputs))
-        if common_in_out:
+        if common_in_out := set(self.inputs).intersection(set(self.outputs)):
             raise ValueError(
                 f"Failed to create node {self}.\n"
                 f"A node cannot have the same inputs and outputs: "
@@ -688,9 +676,7 @@ def _to_list(element: Union[None, str, Iterable[str], Dict[str, str]]) -> List[s
         return []
     if isinstance(element, str):
         return [element]
-    if isinstance(element, dict):
-        return list(element.values())
-    return list(element)
+    return list(element.values()) if isinstance(element, dict) else list(element)
 
 
 def _get_readable_func_name(func: Callable) -> str:

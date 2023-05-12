@@ -68,8 +68,7 @@ def requirements_file(tmp_path):
 @fixture
 def fake_session(mocker):
     mock_session_create = mocker.patch.object(KedroSession, "create")
-    mocked_session = mock_session_create.return_value.__enter__.return_value
-    return mocked_session
+    return mock_session_create.return_value.__enter__.return_value
 
 
 # pylint:disable=too-few-public-methods
@@ -278,7 +277,7 @@ class TestCliUtils:
         with raises(KedroCliError):
             get_pkg_version(requirements_file, "nonexistent")
         with raises(KedroCliError):
-            non_existent_file = str(requirements_file) + "-nonexistent"
+            non_existent_file = f"{str(requirements_file)}-nonexistent"
             get_pkg_version(non_existent_file, "pandas")
 
     def test_clean_pycache(self, tmp_path, mocker):

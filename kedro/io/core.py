@@ -531,14 +531,12 @@ class AbstractVersionedDataSet(AbstractDataSet, abc.ABC):
         # version from the given path.
         pattern = str(self._get_versioned_path("*"))
         version_paths = sorted(self._glob_function(pattern), reverse=True)
-        most_recent = next(
+        if most_recent := next(
             (path for path in version_paths if self._exists_function(path)), None
-        )
-
-        if not most_recent:
+        ):
+            return PurePath(most_recent).parent.name
+        else:
             raise VersionNotFoundError(f"Did not find any versions for {self}")
-
-        return PurePath(most_recent).parent.name
 
     # 'key' is set to prevent cache key overlapping for load and save:
     # https://cachetools.readthedocs.io/en/stable/#cachetools.cachedmethod
@@ -670,17 +668,15 @@ def _parse_filepath(filepath: str) -> Dict[str, str]:
 
     path = parsed_path.path
     if protocol == "file":
-        windows_path = re.match(r"^/([a-zA-Z])[:|]([\\/].*)$", path)
-        if windows_path:
+        if windows_path := re.match(r"^/([a-zA-Z])[:|]([\\/].*)$", path):
             path = ":".join(windows_path.groups())
 
     options = {"protocol": protocol, "path": path}
 
-    if parsed_path.netloc:
-        if protocol in CLOUD_PROTOCOLS:
-            host_with_port = parsed_path.netloc.rsplit("@", 1)[-1]
-            host = host_with_port.rsplit(":", 1)[0]
-            options["path"] = host + options["path"]
+    if parsed_path.netloc and protocol in CLOUD_PROTOCOLS:
+        host_with_port = parsed_path.netloc.rsplit("@", 1)[-1]
+        host = host_with_port.rsplit(":", 1)[0]
+        options["path"] = host + options["path"]
 
     return options
 

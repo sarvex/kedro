@@ -463,7 +463,7 @@ def update_kedro_req(context: behave.runner.Context):
 def add_req(context: behave.runner.Context, dependency: str):
     reqs_path = context.root_project_dir / "src" / "requirements.in"
     if reqs_path.is_file():
-        reqs_path.write_text(reqs_path.read_text() + "\n" + str(dependency) + "\n")
+        reqs_path.write_text(reqs_path.read_text() + "\n" + dependency + "\n")
 
 
 @then("CLI should print the version in an expected format")

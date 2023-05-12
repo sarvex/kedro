@@ -60,8 +60,7 @@ def _validate_datasets_exist(
     outputs = {_strip_transcoding(k) for k in outputs}
 
     existing = {_strip_transcoding(ds) for ds in pipe.data_sets()}
-    non_existent = (inputs | outputs | parameters) - existing
-    if non_existent:
+    if non_existent := (inputs | outputs | parameters) - existing:
         raise ModularPipelineError(
             f"Failed to map datasets and/or parameters: "
             f"{', '.join(sorted(non_existent))}"

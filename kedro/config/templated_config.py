@@ -2,6 +2,7 @@
 or more configuration files from specified paths, and format template strings
 with the values from the passed dictionary.
 """
+
 import re
 from copy import deepcopy
 from pathlib import Path
@@ -19,7 +20,7 @@ IDENTIFIER_PATTERN = re.compile(
     re.VERBOSE,
 )
 FULL_STRING_IDENTIFIER_PATTERN = re.compile(
-    r"^" + IDENTIFIER_PATTERN.pattern + r"$", re.VERBOSE
+    f"^{IDENTIFIER_PATTERN.pattern}$", re.VERBOSE
 )
 
 

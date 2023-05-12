@@ -128,8 +128,9 @@ def _pull_package(
         package_metadata = dist_info_file[0] / "METADATA"
 
         req_pattern = r"Requires-Dist: (.*?)\n"
-        package_reqs = re.findall(req_pattern, package_metadata.read_text())
-        if package_reqs:
+        if package_reqs := re.findall(
+            req_pattern, package_metadata.read_text()
+        ):
             requirements_in = _get_requirements_in(
                 metadata.source_dir, create_empty=True
             )

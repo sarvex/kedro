@@ -279,7 +279,7 @@ class GBQQueryDataSet(AbstractDataSet):
             # filesystem for loading sql file
             _fs_args = copy.deepcopy(fs_args) or {}
             _fs_credentials = _fs_args.pop("credentials", {})
-            protocol, path = get_protocol_and_path(str(filepath))
+            protocol, path = get_protocol_and_path(filepath)
 
             self._protocol = protocol
             self._fs = fsspec.filesystem(self._protocol, **_fs_credentials, **_fs_args)
@@ -287,8 +287,7 @@ class GBQQueryDataSet(AbstractDataSet):
 
     def _describe(self) -> Dict[str, Any]:
         load_args = copy.deepcopy(self._load_args)
-        desc = {}
-        desc["sql"] = str(load_args.pop("query", None))
+        desc = {"sql": str(load_args.pop("query", None))}
         desc["filepath"] = str(self._filepath)
         desc["load_args"] = str(load_args)
 

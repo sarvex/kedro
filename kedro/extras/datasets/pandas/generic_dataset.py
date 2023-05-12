@@ -185,8 +185,7 @@ class GenericDataSet(AbstractVersionedDataSet):
         self._ensure_file_system_target()
 
         load_path = get_filepath_str(self._get_load_path(), self._protocol)
-        load_method = getattr(pd, f"read_{self._file_format}", None)
-        if load_method:
+        if load_method := getattr(pd, f"read_{self._file_format}", None):
             with self._fs.open(load_path, **self._fs_open_args_load) as fs_file:
                 return load_method(fs_file, **self._load_args)
         raise DataSetError(
@@ -200,8 +199,7 @@ class GenericDataSet(AbstractVersionedDataSet):
         self._ensure_file_system_target()
 
         save_path = get_filepath_str(self._get_save_path(), self._protocol)
-        save_method = getattr(data, f"to_{self._file_format}", None)
-        if save_method:
+        if save_method := getattr(data, f"to_{self._file_format}", None):
             with self._fs.open(save_path, **self._fs_open_args_save) as fs_file:
                 # KEY ASSUMPTION - first argument is path/buffer/io
                 save_method(fs_file, **self._save_args)

@@ -134,7 +134,7 @@ class SparkHiveDataSet(AbstractDataSet):
         self._table_pk = table_pk or []
         self._database = database
         self._table = table
-        self._stage_table = "_temp_" + table
+        self._stage_table = f"_temp_{table}"
 
         # self._table_columns is set up in _save() to speed up initialization
         self._table_columns = []  # type: List[str]
@@ -174,8 +174,9 @@ class SparkHiveDataSet(AbstractDataSet):
         else:
             self._table_columns = self._load().columns
             if self._write_mode == "upsert":
-                non_existent_columns = set(self._table_pk) - set(self._table_columns)
-                if non_existent_columns:
+                if non_existent_columns := set(self._table_pk) - set(
+                    self._table_columns
+                ):
                     colnames = ", ".join(sorted(non_existent_columns))
                     raise DataSetError(
                         f"Columns [{colnames}] selected as primary key(s) not found in "

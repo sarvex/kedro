@@ -35,13 +35,11 @@ class CLIHooksManager(PluginManager):
 
         # Get list of plugin/distinfo tuples for all setuptools registered plugins.
         plugininfo = self.list_plugin_distinfo()
-        plugin_names = {
+        if plugin_names := {
             f"{dist.project_name}-{dist.version}"
             for plugin, dist in plugininfo
             if plugin not in already_registered
-        }
-
-        if plugin_names:
+        }:
             logging.getLogger(__name__).info(
                 "Registered CLI hooks from %d installed plugin(s): %s",
                 len(plugin_names),

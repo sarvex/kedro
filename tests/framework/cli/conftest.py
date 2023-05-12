@@ -81,7 +81,7 @@ def dummy_config(fake_root_dir, fake_metadata):
 
 @fixture(scope="module")
 def fake_metadata(fake_root_dir):
-    metadata = ProjectMetadata(
+    return ProjectMetadata(
         fake_root_dir / REPO_NAME / "pyproject.toml",
         PACKAGE_NAME,
         "CLI Testing Project",
@@ -89,7 +89,6 @@ def fake_metadata(fake_root_dir):
         kedro_version,
         fake_root_dir / REPO_NAME / "src",
     )
-    return metadata
 
 
 # This is needed just for the tests, those CLI groups are merged in our

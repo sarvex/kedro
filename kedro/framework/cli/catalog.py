@@ -59,8 +59,7 @@ def list_datasets(metadata: ProjectMetadata, pipeline, env):
 
     result = {}
     for pipe in target_pipelines:
-        pl_obj = pipelines.get(pipe)
-        if pl_obj:
+        if pl_obj := pipelines.get(pipe):
             pipeline_ds = pl_obj.data_sets()
         else:
             existing_pls = ", ".join(sorted(pipelines.keys()))
@@ -142,9 +141,7 @@ def create_catalog(metadata: ProjectMetadata, pipeline_name, env):
         if not ds_name.startswith("params:") and ds_name != "parameters"
     }
 
-    # Datasets that are missing in Data Catalog
-    missing_ds = sorted(pipe_datasets - catalog_datasets)
-    if missing_ds:
+    if missing_ds := sorted(pipe_datasets - catalog_datasets):
         catalog_path = (
             context.project_path
             / settings.CONF_ROOT

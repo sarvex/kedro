@@ -13,7 +13,7 @@ VERSION_MATCHSTR = r'\s*__version__\s*=\s*"(\d+\.\d+\.\d+)"'
 
 def get_kedro_version(init_file_path):
     match_obj = re.search(VERSION_MATCHSTR, Path(init_file_path).read_text())
-    return match_obj.group(1)
+    return match_obj[1]
 
 
 def main(argv):

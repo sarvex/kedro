@@ -166,9 +166,8 @@ def install(metadata: ProjectMetadata, compile_flag):
     if environment_yml.is_file():
         call(["conda", "env", "update", "--file", str(environment_yml), "--prune"])
 
-    default_compile = bool(compile_flag is None and not requirements_in.is_file())
-    do_compile = compile_flag or default_compile
-    if do_compile:
+    default_compile = compile_flag is None and not requirements_in.is_file()
+    if do_compile := compile_flag or default_compile:
         _build_reqs(source_path)
 
     pip_command = ["install", "-U", "-r", str(requirements_txt)]

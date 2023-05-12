@@ -93,8 +93,7 @@ def _from_missing(pipeline, catalog):
     with mock.patch(name) as run:
         SequentialRunner().run_only_missing(pipeline, catalog)
         _, args, _ = run.mock_calls[0]
-    new_pipeline = args[0]
-    return new_pipeline
+    return args[0]
 
 
 class TestPipelineMissing:

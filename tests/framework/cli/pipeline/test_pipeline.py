@@ -120,7 +120,7 @@ class TestPipelineCreateCommand:
         assert f"Pipeline `{PIPELINE_NAME}` was successfully created." in result.output
 
         conf_dirs = list((fake_repo_path / settings.CONF_ROOT).rglob(PIPELINE_NAME))
-        assert conf_dirs == []  # no configs created for the pipeline
+        assert not conf_dirs
 
         test_dir = fake_repo_path / "src" / "tests" / "pipelines" / PIPELINE_NAME
         assert test_dir.is_dir()

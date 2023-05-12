@@ -53,8 +53,7 @@ class MemoryDataSet(AbstractDataSet):
             raise DataSetError("Data for MemoryDataSet has not been saved yet.")
 
         copy_mode = self._copy_mode or _infer_copy_mode(self._data)
-        data = _copy_with_mode(self._data, copy_mode=copy_mode)
-        return data
+        return _copy_with_mode(self._data, copy_mode=copy_mode)
 
     def _save(self, data: Any):
         copy_mode = self._copy_mode or _infer_copy_mode(data)
@@ -94,12 +93,11 @@ def _infer_copy_mode(data: Any) -> str:
         np = None  # pragma: no cover
 
     if pd and isinstance(data, pd.DataFrame) or np and isinstance(data, np.ndarray):
-        copy_mode = "copy"
+        return "copy"
     elif type(data).__name__ == "DataFrame":
-        copy_mode = "assign"
+        return "assign"
     else:
-        copy_mode = "deepcopy"
-    return copy_mode
+        return "deepcopy"
 
 
 def _copy_with_mode(data: Any, copy_mode: str) -> Any:

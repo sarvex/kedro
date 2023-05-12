@@ -49,12 +49,12 @@ def modify_globals(**kwargs: typing.Any):
     globals_ = globals()
     overwritten = {k: globals_[k] for k in globals_.keys() & kwargs.keys()}
     try:
-        globals_.update(kwargs)
+        globals_ |= kwargs
         yield
     finally:
         for var in kwargs:
             globals_.pop(var, None)
-        globals_.update(overwritten)
+        globals_ |= overwritten
 
 
 def run_startup_scripts(startup_dir: pathlib.Path):
@@ -94,8 +94,7 @@ def run_startup_scripts(startup_dir: pathlib.Path):
 
 def main():
     """Locate IPython startup directory and run all Python scripts in it."""
-    startup_dir = locate_ipython_startup_dir()
-    if startup_dir:
+    if startup_dir := locate_ipython_startup_dir():
         run_startup_scripts(startup_dir)
 
 

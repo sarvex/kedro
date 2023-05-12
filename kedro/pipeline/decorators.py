@@ -27,15 +27,13 @@ def _human_readable_time(elapsed: float):
     hours, mins = divmod(mins, 60)
 
     if hours > 0:
-        message = f"{int(hours)}h{int(mins):02}m{int(secs):02}s"
+        return f"{int(hours)}h{int(mins):02}m{int(secs):02}s"
     elif mins > 0:
-        message = f"{int(mins)}m{int(secs):02}s"
+        return f"{int(mins)}m{int(secs):02}s"
     elif secs >= 1:
-        message = f"{secs:.2f}s"
+        return f"{secs:.2f}s"
     else:
-        message = f"{secs * 1000.0:.0f}ms"
-
-    return message
+        return f"{secs * 1000.0:.0f}ms"
 
 
 def log_time(func: Callable) -> Callable:

@@ -42,7 +42,7 @@ def fake_root_dir(tmp_path):
 
 @pytest.fixture
 def fake_metadata(fake_root_dir):
-    metadata = ProjectMetadata(
+    return ProjectMetadata(
         fake_root_dir / REPO_NAME / "pyproject.toml",
         PACKAGE_NAME,
         "CLI Tools Testing Project",
@@ -50,7 +50,6 @@ def fake_metadata(fake_root_dir):
         kedro_version,
         fake_root_dir / REPO_NAME / "src",
     )
-    return metadata
 
 
 class TestCLITools:

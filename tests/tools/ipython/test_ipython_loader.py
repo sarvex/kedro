@@ -114,8 +114,8 @@ class TestRunStartupScripts:
         expected_error_message = (
             f"Startup script `{bad_startup_script}` failed:\nValueError: bad script!"
         )
-        expected_success_message = "Startup script `{}` successfully executed".format(
-            startup_script
+        expected_success_message = (
+            f"Startup script `{startup_script}` successfully executed"
         )
 
         assert len(caplog.records) == 2

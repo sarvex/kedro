@@ -82,7 +82,7 @@ def pipeline_with_duplicate_transcoded_inputs():
 
 @pytest.fixture
 def complex_pipeline():
-    pipeline = Pipeline(
+    return Pipeline(
         [
             node(triconcat, ["H@node1", "I", "M"], "N", name="node1"),
             node(identity, "H@node2", "I", name="node2"),
@@ -96,7 +96,6 @@ def complex_pipeline():
             node(identity, "B@node10", None, name="node10"),
         ]
     )
-    return pipeline
 
 
 @pytest.fixture(
@@ -155,8 +154,10 @@ class TestInvalidPipeline:
         """Nodes must not refer to a dataset without the separator if
         it is referenced later on in the catalog.
         """
-        pattern = "The following datasets are used with transcoding, "
-        pattern += "but were referenced without the separator: B."
+        pattern = (
+            "The following datasets are used with transcoding, "
+            + "but were referenced without the separator: B."
+        )
         with pytest.raises(ValueError, match=pattern):
             Pipeline(
                 [
@@ -384,8 +385,9 @@ class TestGetTranscodeCompatibleName:
 
     def test_get_transcode_compatible_name_multiple_separators(self):
         dataset_name = "mydata@formA@formB"
-        pattern = "Expected maximum 1 transcoding separator, "
-        pattern += "found 2 instead: 'mydata@formA@formB'"
-
+        pattern = (
+            "Expected maximum 1 transcoding separator, "
+            + "found 2 instead: 'mydata@formA@formB'"
+        )
         with pytest.raises(ValueError, match=pattern):
             _strip_transcoding(dataset_name)

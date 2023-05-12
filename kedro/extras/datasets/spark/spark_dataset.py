@@ -28,9 +28,7 @@ def _parse_glob_pattern(pattern: str) -> str:
 
 def _split_filepath(filepath: str) -> Tuple[str, str]:
     split_ = filepath.split("://", 1)
-    if len(split_) == 2:
-        return split_[0] + "://", split_[1]
-    return "", split_[0]
+    return (f"{split_[0]}://", split_[1]) if len(split_) == 2 else ("", split_[0])
 
 
 def _strip_dbfs_prefix(path: str, prefix: str = "/dbfs") -> str:
@@ -59,7 +57,7 @@ def _dbfs_glob(pattern: str, dbutils: Any) -> List[str]:
                 PurePosixPath(_strip_dbfs_prefix(file_info.path, "dbfs:")) / filename
             )
             if fnmatch(path, pattern):
-                path = "/dbfs" + path
+                path = f"/dbfs{path}"
                 matched.add(path)
     return sorted(matched)
 
@@ -284,8 +282,7 @@ class SparkDataSet(AbstractVersionedDataSet):
             path = PurePosixPath(filepath)
 
             if filepath.startswith("/dbfs"):
-                dbutils = _get_dbutils(self._get_spark())
-                if dbutils:
+                if dbutils := _get_dbutils(self._get_spark()):
                     glob_function = partial(_dbfs_glob, dbutils=dbutils)
                     exists_function = partial(_dbfs_exists, dbutils=dbutils)
 

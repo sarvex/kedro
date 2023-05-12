@@ -4,15 +4,15 @@ from kedro.runner import SequentialRunner
 
 
 def defrost(frozen_meat):
-    return frozen_meat + "_defrosted"
+    return f"{frozen_meat}_defrosted"
 
 
 def grill(meat):
-    return meat + "_grilled"
+    return f"{meat}_grilled"
 
 
 def eat(food):
-    return food + "_done"
+    return f"{food}_done"
 
 
 class TestTransformPipelineIntegration:

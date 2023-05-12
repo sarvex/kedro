@@ -253,8 +253,7 @@ class SQLTableDataSet(AbstractDataSet):
     def _exists(self) -> bool:
         eng = self.engines[self._connection_str]  # type: ignore
         schema = self._load_args.get("schema", None)
-        exists = self._load_args["table_name"] in eng.table_names(schema)
-        return exists
+        return self._load_args["table_name"] in eng.table_names(schema)
 
 
 class SQLQueryDataSet(AbstractDataSet):
@@ -371,7 +370,7 @@ class SQLQueryDataSet(AbstractDataSet):
         default_load_args = {}  # type: Dict[str, Any]
 
         self._load_args = (
-            {**default_load_args, **load_args}
+            default_load_args | load_args
             if load_args is not None
             else default_load_args
         )
@@ -384,7 +383,7 @@ class SQLQueryDataSet(AbstractDataSet):
             # filesystem for loading sql file
             _fs_args = copy.deepcopy(fs_args) or {}
             _fs_credentials = _fs_args.pop("credentials", {})
-            protocol, path = get_protocol_and_path(str(filepath))
+            protocol, path = get_protocol_and_path(filepath)
 
             self._protocol = protocol
             self._fs = fsspec.filesystem(self._protocol, **_fs_credentials, **_fs_args)

@@ -16,7 +16,7 @@ TEST_TEXT_RESPONSE_DATA = "This is a response."
 TEST_JSON_RESPONSE_DATA = [{"key": "value"}]
 
 TEST_PARAMS = {"param": "value"}
-TEST_URL_WITH_PARAMS = TEST_URL + "?param=value"
+TEST_URL_WITH_PARAMS = f"{TEST_URL}?param=value"
 
 TEST_HEADERS = {"key": "value"}
 
@@ -137,14 +137,7 @@ class TestAPIDataSet:
             APIDataSet(url=TEST_URL, method=method, auth=[], credentials=[])
 
     @pytest.mark.parametrize("auth_kwarg", ["auth", "credentials"])
-    @pytest.mark.parametrize(
-        "auth_seq",
-        [
-            ("username", "password"),
-            ["username", "password"],
-            (e for e in ["username", "password"]),  # Generator.
-        ],
-    )
+    @pytest.mark.parametrize("auth_seq", [("username", "password"), ["username", "password"], iter(["username", "password"])])
     def test_auth_sequence(self, requests_mocker, method, auth_seq, auth_kwarg):
         """
         ``auth`` and ``credentials`` should be able to be any Iterable.

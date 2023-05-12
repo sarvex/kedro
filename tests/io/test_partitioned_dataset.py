@@ -244,8 +244,8 @@ class TestPartitionedDataSetLocal:
         pds = PartitionedDataSet(str(local_csvs), dataset)
         loaded_partitions = pds.load()
 
+        pattern = r"Failed while loading data from data set ParquetDataSet(.*)"
         for partition, df_loader in loaded_partitions.items():
-            pattern = r"Failed while loading data from data set ParquetDataSet(.*)"
             with pytest.raises(DataSetError, match=pattern) as exc_info:
                 df_loader()
             error_message = str(exc_info.value)

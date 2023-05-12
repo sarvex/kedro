@@ -70,15 +70,13 @@ def _assert_pkg_name_ok(pkg_name: str):
 
     base_message = f"`{pkg_name}` is not a valid Python package name."
     if not re.match(r"^[a-zA-Z_]", pkg_name):
-        message = base_message + " It must start with a letter or underscore."
+        message = f"{base_message} It must start with a letter or underscore."
         raise KedroCliError(message)
     if len(pkg_name) < 2:
-        message = base_message + " It must be at least 2 characters long."
+        message = f"{base_message} It must be at least 2 characters long."
         raise KedroCliError(message)
     if not re.match(r"^\w+$", pkg_name[1:]):
-        message = (
-            base_message + " It must contain only letters, digits, and/or underscores."
-        )
+        message = f"{base_message} It must contain only letters, digits, and/or underscores."
         raise KedroCliError(message)
 
 
@@ -326,8 +324,9 @@ def _pull_package(
         package_metadata = dist_info_file[0] / "METADATA"
 
         req_pattern = r"Requires-Dist: (.*?)\n"
-        package_reqs = re.findall(req_pattern, package_metadata.read_text())
-        if package_reqs:
+        if package_reqs := re.findall(
+            req_pattern, package_metadata.read_text()
+        ):
             requirements_in = _get_requirements_in(
                 metadata.source_dir, create_empty=True
             )
@@ -633,17 +632,16 @@ def _install_files(
 def _find_config_files(
     source_config_dir: Path, glob_patterns: List[str]
 ) -> List[Tuple[Path, str]]:
-    config_files = []  # type: List[Tuple[Path, str]]
-
-    if source_config_dir.is_dir():
-        config_files = [
+    return (
+        [
             (path, path.parent.relative_to(source_config_dir).as_posix())
             for glob_pattern in glob_patterns
             for path in source_config_dir.glob(glob_pattern)
             if path.is_file()
         ]
-
-    return config_files
+        if source_config_dir.is_dir()
+        else []
+    )
 
 
 def _get_default_version(metadata: ProjectMetadata, pipeline_name: str) -> str:
@@ -1049,12 +1047,11 @@ def _get_pipeline_artifacts(
     package_dir = project_metadata.source_dir / project_metadata.package_name
     conf_root = settings.CONF_ROOT
     project_conf_path = project_metadata.project_path / conf_root
-    artifacts = PipelineArtifacts(
+    return PipelineArtifacts(
         package_dir / "pipelines" / pipeline_name,
         package_dir.parent / "tests" / "pipelines" / pipeline_name,
         project_conf_path / env,
     )
-    return artifacts
 
 
 def _get_package_artifacts(
@@ -1063,13 +1060,11 @@ def _get_package_artifacts(
     """From existing unpacked wheel, returns in order:
     source_path, tests_path, config_path
     """
-    artifacts = (
+    return (
         source_path / package_name,
         source_path / "tests",
-        # package_data (non-python files) needs to live inside one of the packages
         source_path / package_name / "config",
     )
-    return artifacts
 
 
 def _copy_pipeline_tests(pipeline_name: str, result_path: Path, package_dir: Path):

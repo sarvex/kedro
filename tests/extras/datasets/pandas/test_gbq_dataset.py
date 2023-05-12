@@ -21,8 +21,7 @@ def dummy_dataframe():
 
 @pytest.fixture
 def mock_bigquery_client(mocker):
-    mocked = mocker.patch("google.cloud.bigquery.Client", autospec=True)
-    return mocked
+    return mocker.patch("google.cloud.bigquery.Client", autospec=True)
 
 
 @pytest.fixture

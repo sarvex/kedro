@@ -64,9 +64,7 @@ class LambdaDataSet(AbstractDataSet):
         return self.__load()
 
     def _exists(self) -> bool:
-        if not self.__exists:
-            return super()._exists()
-        return self.__exists()
+        return super()._exists() if not self.__exists else self.__exists()
 
     def _release(self) -> None:
         if not self.__release:

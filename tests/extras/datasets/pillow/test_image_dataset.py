@@ -76,7 +76,7 @@ class TestImageDataSet:
     def test_open_extra_args(self, image_dataset, fs_args):
         assert image_dataset._fs_open_args_load == fs_args["open_args_load"]
         expected_save_fs_args = {"mode": "wb"}  # default
-        expected_save_fs_args.update(fs_args["open_args_save"])
+        expected_save_fs_args |= fs_args["open_args_save"]
         assert image_dataset._fs_open_args_save == expected_save_fs_args
 
     def test_load_missing_file(self, image_dataset):

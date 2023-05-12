@@ -398,7 +398,7 @@ class TestSparkDataSetVersionedDBFS:
     def test_load_exact(self, tmp_path, sample_spark_df):
         ts = generate_timestamp()
         ds_dbfs = SparkDataSet(
-            filepath="/dbfs" + str(tmp_path / FILENAME), version=Version(ts, ts)
+            filepath=f"/dbfs{str(tmp_path / FILENAME)}", version=Version(ts, ts)
         )
 
         ds_dbfs.save(sample_spark_df)
@@ -812,7 +812,7 @@ class TestDataFlowSequentialRunner:
 
         save_path = Path(data_catalog._data_sets["spark_out"]._filepath.as_posix())
         files = list(save_path.glob("*.parquet"))
-        assert len(files) > 0
+        assert files
 
     def test_spark_pickle(self, is_async, data_catalog):
         """SparkDataSet(load) -> node -> PickleDataSet (save)"""
@@ -834,4 +834,4 @@ class TestDataFlowSequentialRunner:
 
         save_path = Path(data_catalog._data_sets["spark_out"]._filepath.as_posix())
         files = list(save_path.glob("*.parquet"))
-        assert len(files) > 0
+        assert files

@@ -231,8 +231,7 @@ class PartitionedDataSet(AbstractDataSet):
     def _partition_to_path(self, path: str):
         dir_path = self._path.rstrip(self._sep)
         path = path.lstrip(self._sep)
-        full_path = self._sep.join([dir_path, path]) + self._filename_suffix
-        return full_path
+        return self._sep.join([dir_path, path]) + self._filename_suffix
 
     def _path_to_partition(self, path: str) -> str:
         dir_path = self._filesystem._strip_protocol(self._normalized_path)
@@ -505,6 +504,7 @@ class IncrementalDataSet(PartitionedDataSet):
     def confirm(self) -> None:
         """Confirm the dataset by updating the checkpoint value to the latest
         processed partition ID"""
-        partition_ids = [self._path_to_partition(p) for p in self._list_partitions()]
-        if partition_ids:
+        if partition_ids := [
+            self._path_to_partition(p) for p in self._list_partitions()
+        ]:
             self._checkpoint.save(partition_ids[-1])  # checkpoint to last partition

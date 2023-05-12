@@ -44,10 +44,10 @@ def get_current_session(silent: bool = False) -> Optional["KedroSession"]:
         KedroSession instance.
 
     """
-    if not _active_session and not silent:
+    if _active_session or silent:
+        return _active_session
+    else:
         raise RuntimeError("There is no active Kedro session.")
-
-    return _active_session
 
 
 def _activate_session(session: "KedroSession", force: bool = False) -> None:
@@ -179,12 +179,10 @@ class KedroSession:
             **_describe_git(session._project_path),
         }
 
-        ctx = click.get_current_context(silent=True)
-        if ctx:
+        if ctx := click.get_current_context(silent=True):
             session_data["cli"] = _jsonify_cli_context(ctx)
 
-        env = env or os.getenv("KEDRO_ENV")
-        if env:
+        if env := env or os.getenv("KEDRO_ENV"):
             session_data["env"] = env
 
         if extra_params:
@@ -259,13 +257,12 @@ class KedroSession:
         extra_params = self.store.get("extra_params")
 
         context_class = settings.CONTEXT_CLASS
-        context = context_class(
+        return context_class(
             package_name=self._package_name,
             project_path=self._project_path,
             env=env,
             extra_params=extra_params,
         )
-        return context
 
     def close(self):
         """Close the current session and save its store to disk

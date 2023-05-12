@@ -102,8 +102,7 @@ class _ProjectPipelines(MutableMapping):
     @staticmethod
     def _get_pipelines_registry_callable(pipelines_module: str):
         module_obj = importlib.import_module(pipelines_module)
-        register_pipelines = getattr(module_obj, "register_pipelines")
-        return register_pipelines
+        return getattr(module_obj, "register_pipelines")
 
     def _load_data(self):
         """Lazily read pipelines defined in the pipelines registry module"""
@@ -132,8 +131,10 @@ class _ProjectPipelines(MutableMapping):
             hook_manager.hook.register_pipelines()  # pylint: disable=no-member
         )
         for pipeline_collection in pipelines_dicts:
-            duplicate_keys = pipeline_collection.keys() & project_pipelines.keys()
-            if duplicate_keys:
+            if (
+                duplicate_keys := pipeline_collection.keys()
+                & project_pipelines.keys()
+            ):
                 warn(
                     f"Found duplicate pipeline entries. "
                     f"The following will be overwritten: {', '.join(duplicate_keys)}"

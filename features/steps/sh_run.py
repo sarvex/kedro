@@ -54,11 +54,7 @@ def check_run(cmd: Union[list, str], print_output: bool = False) -> None:
         cmd: command to be run
         print_output: whether to print output
     """
-    if isinstance(cmd, str):
-        split_cmd = shlex.split(cmd)
-    else:
-        split_cmd = cmd
-
+    split_cmd = shlex.split(cmd) if isinstance(cmd, str) else cmd
     if print_output:
         subprocess.check_call(split_cmd)
     else:
